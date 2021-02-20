@@ -1,0 +1,32 @@
+import numpy as np
+import matplotlib.pylab as plt
+from PyAstronomy import pyasl
+import seaborn as sns
+sns.set()
+data = np.loadtxt('plano44.txt', comments='#')
+wvl = np.linspace(4480, 4600, 5213)
+flux = data[:,1]
+vsini = np.linspace(1, 120, 43)
+print(vsini)
+f = open('vsini.lis', 'w')
+for i in range(1,121):
+    f.write('%d\n'%(i))     
+    for i in np.arange(len(vsini)):
+    bflux = pyasl.rotBroad(wvl, flux, 0.6, vsini[i])    
+    
+    fout = open('%s.'%(int(vsini[i]))+'w1.dat', 'w')
+    
+    for ii in np.arange(len(wvl)):
+        fout.write('%s\t%s\n'%(wvl[ii], bflux[ii]))
+data = np.loadtxt('26.w1.dat', comments='#')
+wvl = np.linspace(4480, 4600, 5213)
+wv = data[:,0]
+flux2 = data[:,1]
+plt.figure(figsize=(15,8))
+plt.title("Rotational broadening")
+plt.xlabel("Wavelength [A]")
+plt.ylabel("Normalized flux")
+plt.plot(wvl, flux, 'k-', label='Template Spectrum')
+plt.plot(wvl, flux2, 'c-',label='Broadening Spectrum')
+plt.legend()
+plt.show()
